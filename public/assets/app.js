@@ -86,10 +86,15 @@
     });
 
   const getSlug = () => {
-    const qs = new URLSearchParams(location.search);
-    if (qs.get("b")) return qs.get("b").trim();
-    return "demo";
-  };
+  const path = location.pathname.replace(/^\/+|\/+$/g, "");
+  
+  if (!path) return "lunaboutiqueags"; // default
+
+  if (path === "luna") return "lunaboutiqueags";
+  if (path === "f1") return "playerasf1";
+
+  return path;
+};
 
   async function loadBusiness(slug) {
     const res = await fetch(`/business/${encodeURIComponent(slug)}.json`, { cache: "no-store" });
