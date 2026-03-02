@@ -1,0 +1,31 @@
+{
+  "name": "Luna Boutique AGS",
+  "theme": {
+    "primary": "#c026d3"
+  },
+  "logo": "/assets/logos/luna.png",
+  "note": "Confirmamos tu pedido por WhatsApp. Envíos a todo México.",
+  "whatsappPhone": "4494389825",
+  "currency": "MXN",
+  "shipping": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "local",
+        "label": "Envío Aguascalientes (24 hrs)",
+        "cost": 70
+      },
+      {
+        "id": "nacional",
+        "label": "Envío Nacional (3-5 días)",
+        "cost": 150
+      }
+    ]
+  },
+  "products": [
+    { "id": "p1", "name": "Vestido Floral Primavera", "price": 499 },
+    { "id": "p2", "name": "Blusa Elegante Beige", "price": 329 },
+    { "id": "p3", "name": "Conjunto Casual Trend", "price": 699 },
+    { "id": "p4", "name": "Bolsa Mini Chic", "price": 259 }
+  ]
+}

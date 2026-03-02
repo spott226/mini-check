@@ -1,0 +1,89 @@
+{
+  "name": "F1 Shirts MX",
+  "theme": {
+    "primary": "#e10600",
+    "primaryHover": "#b80500"
+  },
+  "logo": "/assets/logos/playerasf1.png",
+  "note": "Confirmamos tu pedido por WhatsApp. Envíos a todo México.",
+  "whatsappPhone": "524494389825",
+  "currency": "MXN",
+  "shipping": {
+    "enabled": true,
+    "options": [
+      { "id": "local", "label": "Envío Aguascalientes (24-48 hrs)", "cost": 79 },
+      { "id": "nacional", "label": "Envío Nacional (3-5 días)", "cost": 159 }
+    ]
+  },
+  "products": [
+    {
+      "id": "p1",
+      "name": "Playera Red Bull Racing 2025",
+      "price": 399,
+      "variants": [
+        {
+          "type": "Color",
+          "options": [
+            { "name": "Azul Marino", "image": "/assets/products/f1/redbull.png" },
+            { "name": "Negro", "image": "/assets/products/f1/redbull-negra.jpg" }
+          ]
+        },
+        {
+          "type": "Talla",
+          "options": [
+            { "name": "CH" },
+            { "name": "M" },
+            { "name": "G" },
+            { "name": "XG" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "name": "Playera Ferrari Scuderia",
+      "price": 429,
+      "variants": [
+        {
+          "type": "Color",
+          "options": [
+            { "name": "Rojo", "image": "/assets/products/f1/ferrari.jpg" },
+            { "name": "Negro", "image": "/assets/products/f1/ferrari-negra.jpg" }
+          ]
+        },
+        {
+          "type": "Talla",
+          "options": [
+            { "name": "CH" },
+            { "name": "M" },
+            { "name": "G" },
+            { "name": "XG" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "name": "Playera Mercedes AMG Petronas",
+      "price": 419,
+      "variants": [
+        {
+          "type": "Color",
+          "options": [
+            { "name": "Negro", "image": "/assets/products/f1/amg.jpg" },
+            { "name": "Blanco", "image": "/assets/products/f1/amg-blanca.png" }
+          ]
+        },
+        {
+          "type": "Talla",
+          "options": [
+            { "name": "CH" },
+            { "name": "M" },
+            { "name": "G" },
+            { "name": "XG" }
+          ]
+        }
+      ]
+    }
+  ]
+}
