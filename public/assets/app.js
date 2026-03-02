@@ -439,6 +439,7 @@
     try {
       const slug = getSlug();
       state.biz = await loadBusiness(slug);
+      document.title = state.biz.name || "Mercadia";
 
       $("sendBtn").addEventListener("click", () => {
         const btn = $("sendBtn");
