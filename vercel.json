@@ -1,4 +1,5 @@
 {
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/luna", "destination": "/?b=lunaboutiqueags" },
     { "source": "/f1", "destination": "/?b=playerasf1" },
