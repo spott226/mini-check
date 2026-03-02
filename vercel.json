@@ -1,5 +1,8 @@
 {
   "rewrites": [
+    { "source": "/luna", "destination": "/?b=lunaboutiqueags" },
+    { "source": "/f1", "destination": "/?b=playerasf1" },
+
     { "source": "/pedido-:slug", "destination": "/pedido/index.html" },
     { "source": "/pedido/:slug", "destination": "/pedido/index.html" },
     { "source": "/pedido", "destination": "/pedido/index.html" }
