@@ -103,7 +103,7 @@
 
 async function loadBusiness(slug) {
 
-  const res = await fetch(`https://mercadiamx.com/business/${encodeURIComponent(slug)}.json`, {
+  const res = await fetch(`/business/${encodeURIComponent(slug)}.json`, {
     cache: "no-store"
   });
 
