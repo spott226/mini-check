@@ -38,12 +38,12 @@
 
   "products": [
     {
-      "id": "curso1",
+      "id": "curso_mirada",
       "name": "La mirada que faltó",
       "description": "Pintura sanadora en espejo · Niño interior",
       "price": 700,
       "depositRequired": 200,
-      "image": "/assets/products/cursos/mirada.jpg"
+      "image": "/assets/products/cursos/mirada.png"
     }
   ]
 }

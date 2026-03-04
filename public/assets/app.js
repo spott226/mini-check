@@ -233,7 +233,7 @@
             <div class="product-name">${p.name}</div>
             <div class="price">${money(p.price)}</div>
             ${variantsHtml}
-            <button class="add-variant btn-mini" type="button">Agregar esta combinación</button>
+            <button class="add-variant btn-mini" type="button">Agregar al carrito</button>
             <div class="line-items"></div>
           </div>
         </div>
