@@ -1,406 +1,484 @@
 // public/assets/app.js
-
 (() => {
 
 const $ = (id) => document.getElementById(id);
 
-const state = { biz: null, cart: new Map() };
+const state = {
+  biz: null,
+  cart: new Map()
+};
+
+// =========================
+// Seguridad básica
+// =========================
 
 const COOLDOWN_SECONDS = 10;
 let cooldownTimer = null;
+let cooldownRemaining = 0;
 
-// =========================
-// UTILIDADES
-// =========================
-
-const money = (n) =>
-Number(n || 0).toLocaleString("es-MX", {
-style: "currency",
-currency: state.biz?.currency || "MXN",
-});
-
-// =========================
-// SLUG
-// =========================
-
-const getSlug = () => {
-
-const path = location.pathname.replace(/^\/+|\/+$/g, "");
-
-if (!path) return "lunaboutiqueags";
-
-if (path === "luna") return "lunaboutiqueags";
-if (path === "f1") return "playerasf1";
-if (path === "chelispa") return "chelispa";
-
-return path;
-
+const sanitizeText = (value, maxLen = 120) => {
+  let s = String(value ?? "");
+  s = s.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+  s = s.replace(/\s+/g, " ").trim();
+  if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+  return s;
 };
 
-// =========================
-// CARGAR NEGOCIO
-// =========================
+const sanitizePhone = (value, maxLen = 15) => {
+  let s = String(value ?? "").replace(/[^\d]/g, "");
+  if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+  return s;
+};
+
+const isHoneypotTripped = () => {
+  const hp = $("companyWebsite");
+  if (!hp) return false;
+  const v = sanitizeText(hp.value, 80);
+  return v.length > 0;
+};
+
+const startCooldown = (btn) => {
+  if (cooldownTimer) return;
+
+  cooldownRemaining = COOLDOWN_SECONDS;
+  btn.disabled = true;
+
+  const tick = () => {
+
+    if (cooldownRemaining <= 0) {
+      clearInterval(cooldownTimer);
+      cooldownTimer = null;
+      cooldownRemaining = 0;
+      btn.disabled = false;
+      btn.textContent = "Enviar pedido por WhatsApp";
+      return;
+    }
+
+    btn.textContent = `Espera ${cooldownRemaining}s…`;
+    cooldownRemaining -= 1;
+
+  };
+
+  tick();
+  cooldownTimer = setInterval(tick, 1000);
+};
+
+const stopCooldown = (btn) => {
+  if (cooldownTimer) {
+    clearInterval(cooldownTimer);
+    cooldownTimer = null;
+  }
+
+  cooldownRemaining = 0;
+
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = "Enviar pedido por WhatsApp";
+  }
+};
+
+const money = (n) =>
+  Number(n || 0).toLocaleString("es-MX", {
+    style: "currency",
+    currency: state.biz?.currency || "MXN"
+  });
+
+const getSlug = () => {
+  const qs = new URLSearchParams(location.search);
+  if (qs.get("b")) return qs.get("b").trim();
+  return "demo";
+};
 
 async function loadBusiness(slug) {
 
-const res = await fetch(`/business/${slug}.json`, { cache: "no-store" });
+  const res = await fetch(`/business/${encodeURIComponent(slug)}.json`, {
+    cache: "no-store"
+  });
 
-if (!res.ok) throw new Error("Negocio no encontrado");
+  if (!res.ok) throw new Error(`No existe el negocio "${slug}".`);
 
-return res.json();
-
+  return res.json();
 }
 
-// =========================
-// LOGO
-// =========================
+const norm = (s) => String(s || "").trim().toLowerCase();
+
+function renderTheme() {
+  if (state.biz.theme?.primary) {
+    document.documentElement.style.setProperty(
+      "--primary",
+      state.biz.theme.primary
+    );
+  }
+}
 
 function renderLogo() {
 
-if (!state.biz.logo) return;
+  if (!state.biz.logo) return;
 
-const container = $("logoContainer");
+  const container = $("logoContainer");
+  if (!container) return;
 
-container.innerHTML = "";
+  container.innerHTML = "";
 
-const img = document.createElement("img");
+  const img = document.createElement("img");
+  img.src = state.biz.logo;
+  img.className = "logo";
 
-img.src = state.biz.logo;
-
-img.className = "logo";
-
-container.appendChild(img);
-
+  container.appendChild(img);
 }
 
-// =========================
-// MODO REGISTRO
-// =========================
+function getDefaultImage(p) {
 
-function adaptCheckoutMode() {
+  const colorVar = (p.variants || []).find((v) => norm(v.type) === "color");
 
-if (state.biz.checkoutMode !== "registro") return;
+  const first = colorVar?.options?.[0];
+  const img = typeof first === "string" ? null : first?.image;
 
-[
-"street",
-"neighborhood",
-"zip",
-"city",
-"state",
-"shippingType"
-].forEach(id => {
-
-const el = $(id);
-
-if (!el) return;
-
-const parent = el.closest("div");
-
-if (parent) parent.style.display = "none";
-
-});
-
+  return img || p.image || "";
 }
 
-// =========================
-// CARRITO
-// =========================
+function readSelectedVariants(selects) {
 
-function makeCartKey(productId, variants) {
+  const obj = {};
 
-const keys = Object.keys(variants).sort();
+  selects.forEach((s) => {
+    obj[String(s.dataset.variant || "").trim()] = s.value;
+  });
 
-return productId + "__" + keys.map(k => `${k}=${variants[k]}`).join("|");
-
+  return obj;
 }
 
-// =========================
-// RENDER PRODUCTOS
-// =========================
+function makeCartKey(productId, variantsObj) {
 
-function render() {
+  const keys = Object.keys(variantsObj || {}).sort();
 
-renderLogo();
+  const sig = keys
+    .map((k) => `${k}=${variantsObj[k]}`)
+    .join("|");
 
-$("bizName").textContent = state.biz.name || "Pedido";
-$("bizNote").textContent = state.biz.note || "";
-
-const list = $("productList");
-
-list.innerHTML = "";
-
-state.biz.products.forEach((p) => {
-
-const row = document.createElement("div");
-row.className = "product";
-
-const image = p.image
-? `<img src="${p.image}" class="product-img">`
-: "";
-
-const variantsHtml = (p.variants || []).map(v => {
-
-const options = v.options.map(o => {
-
-const name = typeof o === "string" ? o : o.name;
-
-return `<option value="${name}">${name}</option>`;
-
-}).join("");
-
-return `
-<label class="label small">${v.type}</label>
-<select class="variant-select" data-variant="${v.type}">
-${options}
-</select>
-`;
-
-}).join("");
-
-row.innerHTML = `
-<div class="product-left">
-
-${image}
-
-<div class="product-info">
-
-<div class="product-name">${p.name}</div>
-<div class="price">${money(p.price)}</div>
-
-${variantsHtml}
-
-<button class="add-variant btn-mini">Agregar</button>
-
-<div class="line-items"></div>
-
-</div>
-
-</div>
-`;
-
-const selects = [...row.querySelectorAll(".variant-select")];
-
-const btn = row.querySelector(".add-variant");
-
-const lines = row.querySelector(".line-items");
-
-btn.addEventListener("click", () => {
-
-const variants = {};
-
-selects.forEach(s => variants[s.dataset.variant] = s.value);
-
-const key = makeCartKey(p.id, variants);
-
-const existing = state.cart.get(key);
-
-if (existing) {
-
-existing.qty++;
-
-} else {
-
-state.cart.set(key,{
-productId:p.id,
-variants,
-qty:1
-});
-
+  return `${productId}__${sig}`;
 }
 
-renderLineItems(lines,p.id);
+function renderLineItems(container, productId) {
 
-recalc(true);
+  const items = Array.from(state.cart.entries()).filter(
+    ([, v]) => v.productId === productId
+  );
 
-});
+  container.innerHTML = "";
 
-renderLineItems(lines,p.id);
+  items.forEach(([key, item]) => {
 
-list.appendChild(row);
+    const row = document.createElement("div");
+    row.className = "line-item";
 
-});
+    const variantsText =
+      item.variants && Object.keys(item.variants).length
+        ? Object.entries(item.variants)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(" · ")
+        : "Sin opciones";
 
-recalc();
+    row.innerHTML = `
+      <div class="line-item-left">
+        <div class="line-item-variants">${variantsText}</div>
+        <button class="line-remove" type="button">Quitar</button>
+      </div>
+      <input class="line-qty" type="number" min="1" step="1" value="${item.qty}" />
+    `;
 
+    const qtyInput = row.querySelector(".line-qty");
+    const removeBtn = row.querySelector(".line-remove");
+
+    qtyInput.addEventListener("input", () => {
+
+      const v = Math.max(1, parseInt(qtyInput.value || "1", 10));
+
+      const current = state.cart.get(key);
+      if (!current) return;
+
+      current.qty = v;
+
+      state.cart.set(key, current);
+
+      recalc(true);
+
+    });
+
+    removeBtn.addEventListener("click", () => {
+
+      state.cart.delete(key);
+
+      renderLineItems(container, productId);
+
+      recalc(true);
+
+    });
+
+    container.appendChild(row);
+
+  });
 }
 
-// =========================
-// LINEAS CARRITO
-// =========================
+function renderShippingOptions() {
 
-function renderLineItems(container,productId){
+  const shippingSelect = $("shippingType");
 
-container.innerHTML="";
+  if (!shippingSelect) return;
 
-[...state.cart.entries()]
-.filter(([k,v])=>v.productId===productId)
-.forEach(([key,item])=>{
+  shippingSelect.innerHTML = "";
 
-const row=document.createElement("div");
+  if (state.biz.shipping?.enabled && state.biz.shipping.options) {
 
-row.className="line-item";
+    state.biz.shipping.options.forEach((opt) => {
 
-const variants=Object.entries(item.variants||{})
-.map(([k,v])=>`${k}: ${v}`)
-.join(" · ");
+      const option = document.createElement("option");
 
-row.innerHTML=`
-<div>${variants}</div>
-<input type="number" value="${item.qty}" min="1" class="line-qty">
-<button class="line-remove">Quitar</button>
-`;
+      option.value = opt.id;
+      option.textContent = `${opt.label} (${money(opt.cost)})`;
 
-row.querySelector(".line-remove").onclick=()=>{
+      shippingSelect.appendChild(option);
 
-state.cart.delete(key);
+    });
 
-render();
-
-};
-
-row.querySelector(".line-qty").oninput=(e)=>{
-
-item.qty=parseInt(e.target.value||1);
-
-recalc();
-
-};
-
-container.appendChild(row);
-
-});
-
+    shippingSelect.addEventListener("change", () => recalc(true));
+  }
 }
 
-// =========================
-// TOTALES
-// =========================
+function recalc(animate = false) {
 
-function recalc(){
+  const byId = new Map(state.biz.products.map((p) => [p.id, p]));
 
-const byId=new Map(state.biz.products.map(p=>[p.id,p]));
+  let subtotal = 0;
 
-let subtotal=0;
+  for (const [, item] of state.cart.entries()) {
 
-for(const[,item] of state.cart){
+    const p = byId.get(item.productId);
 
-const p=byId.get(item.productId);
+    if (!p) continue;
 
-subtotal+=p.price*item.qty;
+    subtotal += Number(p.price) * Number(item.qty);
+  }
 
+  let shipping = 0;
+
+  if (state.biz.shipping?.enabled && state.biz.shipping.options) {
+
+    const selected = $("shippingType")?.value;
+
+    const option = state.biz.shipping.options.find(
+      (o) => o.id === selected
+    );
+
+    shipping = option ? Number(option.cost) : 0;
+  }
+
+  const total = subtotal + shipping;
+
+  $("subtotal").textContent = money(subtotal);
+  $("shipping").textContent = money(shipping);
+  $("total").textContent = money(total);
+
+  if (animate) {
+
+    const totalEl = $("total");
+
+    totalEl.classList.add("pulse");
+
+    setTimeout(() => totalEl.classList.remove("pulse"), 300);
+  }
+
+  return { subtotal, shipping, total };
 }
 
-$("subtotal").textContent=money(subtotal);
-$("shipping").textContent=money(0);
-$("total").textContent=money(subtotal);
+function validate() {
 
-return {subtotal,shipping:0,total:subtotal};
+  $("error").textContent = "";
 
+  if (state.cart.size === 0)
+    return "Agrega al menos 1 combinación (talla/color)";
+
+  const name = $("customerName")?.value.trim();
+  const phone = $("customerPhone")?.value.trim();
+
+  const street = $("street")?.value.trim();
+  const neighborhood = $("neighborhood")?.value.trim();
+  const zip = $("zip")?.value.trim();
+  const city = $("city")?.value.trim();
+  const stateField = $("state")?.value.trim();
+
+  const onlyLetters = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/;
+  const onlyNumbers = /^[0-9]+$/;
+
+  if (!name || !onlyLetters.test(name)) return "Nombre inválido.";
+  if (!phone || !onlyNumbers.test(phone) || phone.length !== 10)
+    return "Teléfono inválido (10 dígitos).";
+
+  if (!street) return "Ingresa calle y número.";
+  if (!neighborhood) return "Ingresa colonia.";
+  if (!zip || !onlyNumbers.test(zip) || zip.length !== 5)
+    return "Código postal inválido (5 dígitos).";
+  if (!city) return "Ingresa ciudad.";
+  if (!stateField) return "Ingresa estado.";
+
+  return null;
 }
 
-// =========================
-// VALIDAR
-// =========================
+function buildMessage({ subtotal, shipping, total }) {
 
-function validate(){
+  const byId = new Map(state.biz.products.map((p) => [p.id, p]));
 
-if(state.cart.size===0) return "Agrega un producto.";
+  const items = [];
 
-const name=$("customerName").value.trim();
-const phone=$("customerPhone").value.trim();
+  for (const [, item] of state.cart.entries()) {
 
-if(!name) return "Ingresa tu nombre.";
+    const p = byId.get(item.productId);
 
-if(!phone || phone.length!==10) return "Teléfono inválido.";
+    if (!p) continue;
 
-return null;
+    const lineTotal = Number(p.price) * Number(item.qty);
 
+    const variantsText =
+      item.variants && Object.keys(item.variants).length
+        ? Object.entries(item.variants)
+            .map(
+              ([k, v]) =>
+                `${sanitizeText(k, 30)}: ${sanitizeText(v, 40)}`
+            )
+            .join(", ")
+        : "";
+
+    const safeProductName = sanitizeText(p.name, 80);
+
+    items.push(
+      `- ${safeProductName}${
+        variantsText ? ` (${variantsText})` : ""
+      } x${item.qty} = ${money(lineTotal)}`
+    );
+  }
+
+  const name = sanitizeText($("customerName").value, 60);
+  const phone = sanitizePhone($("customerPhone").value, 15);
+
+  const street = sanitizeText($("street").value, 80);
+  const neighborhood = sanitizeText($("neighborhood").value, 60);
+  const zip = sanitizePhone($("zip").value, 10);
+  const city = sanitizeText($("city").value, 50);
+  const stateField = sanitizeText($("state").value, 50);
+
+  const address = [
+    street,
+    `Col. ${neighborhood}`,
+    `CP ${zip}`,
+    city,
+    stateField
+  ].join(", ");
+
+  const shippingSelectedRaw =
+    $("shippingType")?.selectedOptions?.[0]?.textContent || "";
+
+  const shippingSelected = sanitizeText(shippingSelectedRaw, 80);
+
+  const bizNameSafe = sanitizeText(state.biz.name, 80);
+
+  return [
+    `🧾 *Pedido para ${bizNameSafe}*`,
+    "",
+    `👤 *Cliente:* ${name}`,
+    `📱 *Teléfono:* ${phone}`,
+    `📍 *Dirección:* ${address}`,
+    `🚚 *Envío:* ${shippingSelected}`,
+    "",
+    "🛒 *Productos:*",
+    items.join("\n"),
+    "",
+    `Subtotal: ${money(subtotal)}`,
+    `Envío: ${money(shipping)}`,
+    `*Total: ${money(total)}*`
+  ].join("\n");
 }
 
-// =========================
-// WHATSAPP
-// =========================
+function openWhatsapp(message) {
 
-function buildMessage({total}){
+  const phone = String(state.biz.whatsappPhone || "").replace(/[^\d]/g, "");
 
-const byId=new Map(state.biz.products.map(p=>[p.id,p]));
+  if (!phone) throw new Error("Falta whatsappPhone en el JSON.");
 
-const items=[];
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-for(const[,item] of state.cart){
-
-const p=byId.get(item.productId);
-
-items.push(`- ${p.name} x${item.qty}`);
-
+  location.href = url;
 }
 
-return `🧾 Pedido para ${state.biz.name}
+async function init() {
 
-Cliente: ${$("customerName").value}
-Teléfono: ${$("customerPhone").value}
+  try {
 
-Productos:
-${items.join("\n")}
+    const slug = getSlug();
 
-Total: ${money(total)}`;
+    state.biz = await loadBusiness(slug);
 
-}
+    $("sendBtn").addEventListener("click", () => {
 
-function openWhatsapp(message){
+      const btn = $("sendBtn");
 
-const phone=state.biz.whatsappPhone.replace(/[^\d]/g,"");
+      if (cooldownTimer) return;
 
-location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      if (isHoneypotTripped()) {
 
-}
+        $("error").textContent = "No se pudo enviar el pedido.";
 
-// =========================
-// INIT
-// =========================
+        startCooldown(btn);
 
-async function init(){
+        return;
+      }
 
-try{
+      btn.textContent = "Enviando...";
+      btn.disabled = true;
 
-const slug=getSlug();
+      const err = validate();
 
-state.biz=await loadBusiness(slug);
+      if (err) {
 
-adaptCheckoutMode();
+        btn.textContent = "Enviar pedido por WhatsApp";
+        btn.disabled = false;
 
-document.title=state.biz.name;
+        $("error").textContent = err;
 
-$("sendBtn").onclick=()=>{
+        return;
+      }
 
-const err=validate();
+      const totals = recalc();
 
-if(err){
+      const msg = buildMessage(totals);
 
-$("error").textContent=err;
+      startCooldown(btn);
 
-return;
+      setTimeout(() => {
 
-}
+        try {
 
-const totals=recalc();
+          openWhatsapp(msg);
 
-const msg=buildMessage(totals);
+        } catch (e) {
 
-openWhatsapp(msg);
+          stopCooldown(btn);
 
-};
+          $("error").textContent =
+            e.message || "Error al abrir WhatsApp.";
+        }
 
-render();
+      }, 600);
 
-}catch(e){
+    });
 
-$("bizName").textContent="Error";
+    render();
 
-$("bizNote").textContent=e.message;
+  } catch (e) {
 
-}
+    $("bizName").textContent = "Error";
+    $("bizNote").textContent = e.message;
 
+  }
 }
 
 init();
