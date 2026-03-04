@@ -92,6 +92,7 @@
 
   if (path === "luna") return "lunaboutiqueags";
   if (path === "f1") return "playerasf1";
+  if (path === "CheliSpa") return "chelispa";
 
   return path;
 };
