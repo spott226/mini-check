@@ -249,7 +249,7 @@
             ${variantsHtml}
 
             <button class="add-variant btn-mini" type="button">
-              Agregar esta combinación
+              Agregar al carrito
             </button>
 
             <div class="line-items"></div>
