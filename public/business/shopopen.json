@@ -1,73 +1,75 @@
 {
-"name": "Shop Open",
-"style": "gadgets",
+  "name": "Shop Open",
+  "style": "gadgets",
 
-"theme": {
-"primary": "#d4af37",
-"primaryHover": "#b8962e"
-},
+  "theme": {
+    "primary": "#d4af37",
+    "primaryHover": "#b8962e"
+  },
 
-"logo": "/assets/logos/shopopen.png",
+  "logo": "/assets/logos/shopopen.png",
 
-"note": "Todos los productos incluyen envío GRATIS a todo México. Confirmamos tu pedido por WhatsApp.",
+  "note": "Todos los productos incluyen envío GRATIS a todo México. Confirmamos tu pedido por WhatsApp.",
 
-"whatsappPhone": "5215623642257",
+  "whatsappPhone": "5215623642257",
 
-"currency": "MXN",
+  "currency": "MXN",
 
-"shipping": {
-"enabled": true,
-"options": [
-{
-"id": "gratis",
-"label": "Envío GRATIS a todo México",
-"cost": 0
-}
-]
-},
+  "checkoutMode": "delivery",
 
-"products": [
-{
-"id": "cadena-acero-oro",
-"name": "Cadena de acero inoxidable bañada en oro 24k",
-"price": 500,
-"image": "/assets/products/shopopen/cadena-acero.jpg",
-"description": "Cadena resistente de acero inoxidable con baño de oro de 24 kilates. Estilo elegante y duradero."
-},
-{
-"id": "capucha-urbana",
-"name": "Capucha urbana",
-"price": 300,
-"image": "/assets/products/shopopen/capucha.jpg",
-"description": "Capucha estilo urbano ideal para outfit streetwear o clima frío."
-},
-{
-"id": "reloj-anillo",
-"name": "Mini reloj de anillo elegante",
-"price": 150,
-"image": "/assets/products/shopopen/reloj-anillo.jpg",
-"description": "Mini reloj en forma de anillo. Gadget elegante y llamativo."
-},
-{
-"id": "spray-volumen",
-"name": "Spray para dar volumen al cabello",
-"price": 150,
-"image": "/assets/products/shopopen/spray-volumen.jpg",
-"description": "Spray especial para dar volumen y estilo al cabello."
-},
-{
-"id": "cadena-plata-moissanita",
-"name": "Cadena de plata 925 con moissanita",
-"price": 1750,
-"image": "/assets/products/shopopen/cadena-plata.jpg",
-"description": "Cadena premium de plata 925 con piedra moissanita de alto brillo."
-},
-{
-"id": "pasta-blanqueadora",
-"name": "Pasta para blanquear dientes",
-"price": 150,
-"image": "/assets/products/shopopen/pasta-blanqueadora.jpg",
-"description": "Pasta especializada para ayudar a blanquear los dientes."
-}
-]
+  "shipping": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "gratis",
+        "label": "Envío GRATIS a todo México",
+        "cost": 0
+      }
+    ]
+  },
+
+  "products": [
+    {
+      "id": "cadena-acero-oro",
+      "name": "Cadena de acero inoxidable bañada en oro 24k",
+      "price": 500,
+      "image": "/assets/products/shopopen/cadena-acero.jpg",
+      "description": "Cadena resistente de acero inoxidable con baño de oro de 24 kilates. Estilo elegante y duradero."
+    },
+    {
+      "id": "capucha-urbana",
+      "name": "Capucha urbana",
+      "price": 300,
+      "image": "/assets/products/shopopen/capucha.jpg",
+      "description": "Capucha estilo urbano ideal para outfit streetwear o clima frío."
+    },
+    {
+      "id": "reloj-anillo",
+      "name": "Mini reloj de anillo elegante",
+      "price": 150,
+      "image": "/assets/products/shopopen/reloj-anillo.jpg",
+      "description": "Mini reloj en forma de anillo. Gadget elegante y llamativo."
+    },
+    {
+      "id": "spray-volumen",
+      "name": "Spray para dar volumen al cabello",
+      "price": 150,
+      "image": "/assets/products/shopopen/spray-volumen.jpg",
+      "description": "Spray especial para dar volumen y estilo al cabello."
+    },
+    {
+      "id": "cadena-plata-moissanita",
+      "name": "Cadena de plata 925 con moissanita",
+      "price": 1750,
+      "image": "/assets/products/shopopen/cadena-plata.jpg",
+      "description": "Cadena premium de plata 925 con piedra moissanita de alto brillo."
+    },
+    {
+      "id": "pasta-blanqueadora",
+      "name": "Pasta para blanquear dientes",
+      "price": 150,
+      "image": "/assets/products/shopopen/pasta-blanqueadora.jpg",
+      "description": "Pasta especializada para ayudar a blanquear los dientes."
+    }
+  ]
 }
