@@ -1,7 +1,7 @@
 {
   "name": "F1 Shirts MX",
 
-  "style": "racing",
+  "style": "store",
 
   "theme": {
     "primary": "#e10600",
@@ -16,7 +16,7 @@
 
   "currency": "MXN",
 
-  "checkoutMode": "shipping",
+  "checkoutMode": "delivery",
 
   "shipping": {
     "enabled": true,
@@ -31,6 +31,7 @@
       "id": "p1",
       "name": "Playera Red Bull Racing 2025",
       "price": 399,
+      "image": "/assets/products/f1/redbull.png",
       "variants": [
         {
           "type": "Color",
@@ -55,6 +56,7 @@
       "id": "p2",
       "name": "Playera Ferrari Scuderia",
       "price": 429,
+      "image": "/assets/products/f1/ferrari.jpg",
       "variants": [
         {
           "type": "Color",
@@ -79,6 +81,7 @@
       "id": "p3",
       "name": "Playera Mercedes AMG Petronas",
       "price": 419,
+      "image": "/assets/products/f1/amg.jpg",
       "variants": [
         {
           "type": "Color",
