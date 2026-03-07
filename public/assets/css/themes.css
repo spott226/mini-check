@@ -3,6 +3,7 @@ THEMES
 Sistema de temas Mercadia
 ====================================================== */
 
+
 /* ===== DEFAULT ===== */
 
 body.theme-default{
@@ -21,6 +22,8 @@ background:var(--bg);
 color:var(--text);
 
 }
+
+
 
 /* ===== GADGETS ===== */
 
@@ -46,6 +49,12 @@ background:#111827;
 border:1px solid #1f2937;
 }
 
+body.theme-gadgets .totals{
+background:#111827;
+}
+
+
+
 /* ===== SPA ===== */
 
 body.theme-spa{
@@ -64,6 +73,8 @@ background:linear-gradient(180deg,#f6f0ff,#ffffff);
 color:#2d3748;
 
 }
+
+
 
 /* ===== RACING ===== */
 
@@ -84,6 +95,17 @@ color:#f3f4f6;
 
 }
 
+body.theme-racing .card{
+background:#111111;
+border:1px solid #1f2937;
+}
+
+body.theme-racing .totals{
+background:#111111;
+}
+
+
+
 /* ===== DENTAL ===== */
 
 body.theme-dental{
@@ -102,6 +124,8 @@ background:#f8fafc;
 color:#0f172a;
 
 }
+
+
 
 /* ===== STREET ===== */
 
@@ -122,6 +146,17 @@ color:#f9fafb;
 
 }
 
+body.theme-street .card{
+background:#1f2937;
+border:1px solid #374151;
+}
+
+body.theme-street .totals{
+background:#1f2937;
+}
+
+
+
 /* ===== LUXURY ===== */
 
 body.theme-luxury{
@@ -140,6 +175,17 @@ background:#020617;
 color:#f8fafc;
 
 }
+
+body.theme-luxury .card{
+background:#0f172a;
+border:1px solid #1e293b;
+}
+
+body.theme-luxury .totals{
+background:#0f172a;
+}
+
+
 
 /* ===== HATS ===== */
 
@@ -166,8 +212,14 @@ border:1px solid #2a2a2a;
 border-radius:18px;
 }
 
+body.theme-hats .totals{
+background:#1a1a1a;
+}
+
+
+
 /* ======================================================
-STORE (PLANTILLA ZARA / ECOMMERCE)
+STORE (PLANTILLA ECOMMERCE TIPO ZARA)
 ====================================================== */
 
 body.theme-store{
@@ -187,13 +239,14 @@ color:#111111;
 
 }
 
-/* NAVBAR */
 
-.premium-only{
+/* ===== NAVBAR ===== */
+
+.store-nav{
 display:none;
 }
 
-body.theme-store .premium-only{
+body.theme-store .store-nav{
 
 display:flex;
 align-items:center;
@@ -223,7 +276,9 @@ font-size:14px;
 
 }
 
-/* HEADER */
+
+
+/* ===== HEADER ===== */
 
 body.theme-store .header{
 
@@ -239,7 +294,9 @@ margin:auto;
 
 }
 
-/* CONTAINER */
+
+
+/* ===== CONTAINER ===== */
 
 body.theme-store .container{
 
@@ -248,7 +305,9 @@ margin:40px auto;
 
 }
 
-/* PRODUCT GRID */
+
+
+/* ===== PRODUCT GRID ===== */
 
 body.theme-store .product-list{
 
@@ -263,7 +322,9 @@ margin-top:30px;
 
 }
 
-/* PRODUCT CARD */
+
+
+/* ===== PRODUCT CARD ===== */
 
 body.theme-store .product{
 
@@ -288,7 +349,9 @@ transform:translateY(-6px);
 
 }
 
-/* IMAGE */
+
+
+/* ===== IMAGE ===== */
 
 body.theme-store .product-img{
 
@@ -301,7 +364,9 @@ margin-bottom:14px;
 
 }
 
-/* PRODUCT NAME */
+
+
+/* ===== PRODUCT NAME ===== */
 
 body.theme-store .product-name{
 
@@ -312,7 +377,9 @@ margin-top:6px;
 
 }
 
-/* PRICE */
+
+
+/* ===== PRICE ===== */
 
 body.theme-store .price{
 
@@ -323,7 +390,9 @@ margin-top:4px;
 
 }
 
-/* DESCRIPTION */
+
+
+/* ===== DESCRIPTION ===== */
 
 body.theme-store .product-description{
 
@@ -335,7 +404,9 @@ max-width:260px;
 
 }
 
-/* BUTTON */
+
+
+/* ===== ADD BUTTON ===== */
 
 body.theme-store .btn-mini{
 
@@ -363,7 +434,9 @@ background:#000000;
 
 }
 
-/* CHECKOUT BUTTON */
+
+
+/* ===== CHECKOUT BUTTON ===== */
 
 body.theme-store .btn{
 
@@ -379,7 +452,9 @@ color:white;
 
 }
 
-/* TOTALS */
+
+
+/* ===== TOTALS ===== */
 
 body.theme-store .totals{
 
@@ -388,5 +463,7 @@ margin-top:40px;
 border-top:1px solid #e5e7eb;
 
 padding-top:20px;
+
+background:white;
 
 }
