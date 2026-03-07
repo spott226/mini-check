@@ -29,9 +29,10 @@ MENÚ PREMIUM
 (se activa cuando style = store)
 ========================= -->
 
-<nav class="store-nav">
+<nav class="store-nav premium-only">
 
 <div class="store-nav-left">
+<div class="menu-toggle">☰</div>
 <span id="storeLogoText"></span>
 </div>
 
@@ -270,7 +271,31 @@ Este pedido se envía directamente al negocio vía WhatsApp.
 
 </main>
 
+<!-- =========================
+MODAL PRODUCTO
+========================= -->
 
+<div id="productModal" class="modal">
+
+  <div class="modal-box">
+
+    <button id="modalClose" class="modal-close">✕</button>
+
+    <img id="modalImg" class="modal-img">
+
+    <h2 id="modalName"></h2>
+
+    <p id="modalPrice"></p>
+
+    <div id="modalVariants"></div>
+
+    <button id="modalAdd" class="btn">
+      Agregar al carrito
+    </button>
+
+  </div>
+
+</div>
 
 <script src="/assets/app.js"></script>
 

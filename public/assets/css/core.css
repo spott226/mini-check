@@ -623,3 +623,92 @@ background:transparent;
 border-radius:0;
 box-shadow:none;
 }
+
+/* ======================================================
+HAMBURGER MENU
+====================================================== */
+
+.menu-toggle{
+font-size:26px;
+cursor:pointer;
+display:none;
+}
+
+.menu-panel{
+position:fixed;
+top:0;
+left:-320px;
+width:320px;
+height:100%;
+background:white;
+padding:40px 30px;
+box-shadow:0 10px 40px rgba(0,0,0,.2);
+transition:.35s;
+z-index:200;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.menu-panel.open{
+left:0;
+}
+
+.menu-panel a{
+text-decoration:none;
+color:#111;
+font-weight:600;
+font-size:16px;
+}
+
+body.theme-store .menu-toggle{
+display:block;
+}
+
+/* ======================================================
+PRODUCT MODAL
+====================================================== */
+
+.product-modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:300;
+}
+
+.product-modal.open{
+display:flex;
+}
+
+.product-modal-box{
+background:white;
+padding:30px;
+border-radius:16px;
+max-width:420px;
+width:90%;
+text-align:center;
+position:relative;
+}
+
+.product-modal-img{
+width:100%;
+max-height:280px;
+object-fit:contain;
+margin-bottom:20px;
+}
+
+.product-modal-close{
+position:absolute;
+top:10px;
+right:10px;
+font-size:22px;
+cursor:pointer;
+background:none;
+border:none;
+}

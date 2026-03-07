@@ -386,8 +386,20 @@ async function loadBusiness(slug) {
       totalEl.classList.add("pulse");
       setTimeout(() => totalEl.classList.remove("pulse"), 300);
     }
+// contador carrito
+const cartCountEl = document.getElementById("cartCount");
 
-    return { subtotal, shipping, total };
+if (cartCountEl) {
+  let totalItems = 0;
+
+  for (const [, item] of state.cart.entries()) {
+    totalItems += Number(item.qty);
+  }
+
+  cartCountEl.textContent = totalItems;
+}
+
+return { subtotal, shipping, total };
   }
 
   // ✅ CAMBIO MÍNIMO: valida distinto si es "registro"
