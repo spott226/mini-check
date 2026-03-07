@@ -596,6 +596,19 @@ return { subtotal, shipping, total };
       });
 
       render();
+
+/* =========================
+MENU HAMBURGUESA
+========================= */
+
+const menuToggle = document.querySelector(".menu-toggle");
+const menuPanel = document.getElementById("menuPanel");
+
+if(menuToggle && menuPanel){
+menuToggle.addEventListener("click",()=>{
+menuPanel.classList.toggle("open");
+});
+}
     } catch (e) {
       $("bizName").textContent = "Error";
       $("bizNote").textContent = e.message;
@@ -603,6 +616,14 @@ return { subtotal, shipping, total };
   }
 
   init();
+
+  const cartBtn = document.getElementById("cartBtn");
+
+if(cartBtn){
+cartBtn.addEventListener("click",()=>{
+document.getElementById("contacto").scrollIntoView({behavior:"smooth"});
+});
+}
 
   /* =========================
    Fondo de partículas ligero
