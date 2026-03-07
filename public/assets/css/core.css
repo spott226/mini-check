@@ -612,10 +612,14 @@ color:#fff;
 border:none;
 }
 
-/* totales más discretos */
+/* totales discretos SOLO para tienda */
 
 body.theme-store .totals{
-margin-top:60px;
+margin-top:40px;
+padding-top:15px;
 border-top:1px solid var(--border);
-padding-top:20px;
+
+background:transparent;
+border-radius:0;
+box-shadow:none;
 }
